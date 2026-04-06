@@ -1,0 +1,53 @@
+package com.zaleb.zalebblog.services.impl;
+
+import com.zaleb.zalebblog.dtos.ArticleResponseDto;
+import com.zaleb.zalebblog.dtos.CommentRequestDto;
+import com.zaleb.zalebblog.dtos.CommentResponseDto;
+import com.zaleb.zalebblog.entities.Article;
+import com.zaleb.zalebblog.entities.Comment;
+import com.zaleb.zalebblog.exceptions.BadRequestException;
+import com.zaleb.zalebblog.mappers.ArticleMapper;
+import com.zaleb.zalebblog.mappers.CommentMapper;
+import com.zaleb.zalebblog.repositories.ArticleRepository;
+import com.zaleb.zalebblog.repositories.CommentRepository;
+import com.zaleb.zalebblog.services.ArticleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+@Service
+@RequiredArgsConstructor
+public class ArticleServiceImpl implements ArticleService {
+
+    private final ArticleRepository articleRepository;
+    private final CommentRepository commentRepository;
+    private final ArticleMapper articleMapper;
+    private final CommentMapper commentMapper;
+
+
+    @Override
+    public Set<ArticleResponseDto> getAllArticles() {
+        List<Article> articleList = articleRepository.findAll();
+        Set<Article> allArticles = new HashSet<>(articleList);
+        return articleMapper.entitiesToDtos(allArticles);
+    }
+
+    @Override
+    public CommentResponseDto comment(Long articleId, CommentRequestDto commentRequestDto) {
+        Optional<Article> article = articleRepository.findById(articleId);
+        if (article.isEmpty()) {
+            throw new BadRequestException("that article isn't real");
+        }
+        Article articleToComment = article.get();
+        Comment comment = commentMapper.dtoToEntity(commentRequestDto);
+        articleToComment.getComments().add(comment);
+        articleRepository.saveAndFlush(articleToComment);
+        comment.setArticle(articleToComment);
+
+        return commentMapper.entityToDto(commentRepository.saveAndFlush(comment));
+    }
+}
