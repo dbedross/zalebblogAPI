@@ -3,6 +3,7 @@ package com.zaleb.zalebblog.controllers;
 import com.zaleb.zalebblog.dtos.ArticleRequestDto;
 import com.zaleb.zalebblog.dtos.ArticleResponseDto;
 import com.zaleb.zalebblog.dtos.CredentialsDto;
+import com.zaleb.zalebblog.dtos.LoginResponseDto;
 import com.zaleb.zalebblog.dtos.UserResponseDto;
 import com.zaleb.zalebblog.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public UserResponseDto login(@RequestBody CredentialsDto credentials) {
+    public LoginResponseDto login(@RequestBody CredentialsDto credentials) {
         return userService.login(credentials);
     }
 

@@ -3,6 +3,7 @@ package com.zaleb.zalebblog.services.impl;
 import com.zaleb.zalebblog.dtos.ArticleRequestDto;
 import com.zaleb.zalebblog.dtos.ArticleResponseDto;
 import com.zaleb.zalebblog.dtos.CredentialsDto;
+import com.zaleb.zalebblog.dtos.LoginResponseDto;
 import com.zaleb.zalebblog.dtos.UserResponseDto;
 import com.zaleb.zalebblog.entities.Article;
 import com.zaleb.zalebblog.entities.Category;
@@ -15,6 +16,7 @@ import com.zaleb.zalebblog.mappers.UserMapper;
 import com.zaleb.zalebblog.repositories.ArticleRepository;
 import com.zaleb.zalebblog.repositories.CategoryRepository;
 import com.zaleb.zalebblog.repositories.UserRepository;
+import com.zaleb.zalebblog.services.JwtService;
 import com.zaleb.zalebblog.services.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +37,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final ArticleMapper articleMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+
+    // ...existing code...
 
     private User findUser(String username) {
         Optional<User> user = userRepository.findByCredentialsUsername(username);
@@ -45,7 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto login(CredentialsDto credentials) {
+    public LoginResponseDto login(CredentialsDto credentials) {
         if (credentials == null || credentials.getUsername() == null || credentials.getPassword() == null) {
             throw new BadRequestException("A username and password are required.");
         }
@@ -55,7 +60,9 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(credentials.getPassword(), userToValidate.getCredentials().getPassword())) {
             throw new BadRequestException("incorrect password");
         }
-        return userMapper.entityToDto(userToValidate);
+
+        String token = jwtService.generateToken(userToValidate);
+        return new LoginResponseDto(userToValidate.getId(), userToValidate.getName(), token);
     }
 
     @Override
