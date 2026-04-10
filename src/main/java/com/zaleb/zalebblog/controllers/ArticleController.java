@@ -1,10 +1,13 @@
 package com.zaleb.zalebblog.controllers;
 
+import com.zaleb.zalebblog.dtos.ArticleRequestDto;
 import com.zaleb.zalebblog.dtos.ArticleResponseDto;
 import com.zaleb.zalebblog.dtos.CommentRequestDto;
 import com.zaleb.zalebblog.dtos.CommentResponseDto;
 import com.zaleb.zalebblog.services.ArticleService;
+import com.zaleb.zalebblog.services.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -16,6 +19,7 @@ import java.util.Set;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final JwtService jwtService;
 
     @GetMapping
     public Set<ArticleResponseDto> getAllArticles() {
@@ -23,8 +27,18 @@ public class ArticleController {
     }
 
     @PostMapping("/{articleId}/comment")
-    public CommentResponseDto comment(@PathVariable("articleId") Long articleId, @RequestBody CommentRequestDto commentRequestDto) {
+    public CommentResponseDto comment(@PathVariable("articleId") Long articleId,
+                                      @RequestBody CommentRequestDto commentRequestDto) {
         return articleService.comment(articleId, commentRequestDto);
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasRole('AUTHOR')")
+    public ArticleResponseDto createArticle(@RequestHeader("Authorization") String authHeader,
+                                            @RequestBody ArticleRequestDto articleRequestDto) {
+        String token = authHeader.substring(7);
+        Long userId = jwtService.extractId(token);
+        return articleService.createArticle(userId, articleRequestDto);
     }
 
 }

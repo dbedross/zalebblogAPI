@@ -1,5 +1,6 @@
 package com.zaleb.zalebblog.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 public class Credentials {
 
+    @Column(unique = true)
     private String username;
 
     private String password;

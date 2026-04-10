@@ -40,8 +40,17 @@ public class Seeder implements CommandLineRunner {
         creds2.setUsername("lilzkeepaswitch");
         creds2.setPassword(passwordEncoder.encode("password"));
         zachUser.setCredentials(creds2);
+        zachUser.setRole("AUTHOR");
 
-        userRepository.saveAllAndFlush(Arrays.asList(new User[]{calebUser, zachUser}));
+        User dev = new User();
+        dev.setName("daniel");
+        Credentials creds3 = new Credentials();
+        creds3.setUsername("dev");
+        creds3.setPassword(passwordEncoder.encode("password"));
+        dev.setCredentials(creds3);
+        dev.setRole("DEVELOPER");
+
+        userRepository.saveAllAndFlush(Arrays.asList(new User[]{calebUser, zachUser, dev}));
 
         Category featuredCategory = new Category();
         featuredCategory.setName("Featured");

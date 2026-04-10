@@ -21,6 +21,8 @@ public class User {
 
     private String name;
 
+    private String role = "USER";
+
     @Embedded
     private Credentials credentials;
 

@@ -1,23 +1,26 @@
 package com.zaleb.zalebblog.services.impl;
 
+import com.zaleb.zalebblog.dtos.ArticleRequestDto;
 import com.zaleb.zalebblog.dtos.ArticleResponseDto;
 import com.zaleb.zalebblog.dtos.CommentRequestDto;
 import com.zaleb.zalebblog.dtos.CommentResponseDto;
 import com.zaleb.zalebblog.entities.Article;
+import com.zaleb.zalebblog.entities.Category;
 import com.zaleb.zalebblog.entities.Comment;
+import com.zaleb.zalebblog.entities.User;
 import com.zaleb.zalebblog.exceptions.BadRequestException;
 import com.zaleb.zalebblog.mappers.ArticleMapper;
 import com.zaleb.zalebblog.mappers.CommentMapper;
 import com.zaleb.zalebblog.repositories.ArticleRepository;
+import com.zaleb.zalebblog.repositories.CategoryRepository;
 import com.zaleb.zalebblog.repositories.CommentRepository;
+import com.zaleb.zalebblog.repositories.UserRepository;
 import com.zaleb.zalebblog.services.ArticleService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +28,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final ArticleMapper articleMapper;
     private final CommentMapper commentMapper;
 
@@ -49,5 +54,22 @@ public class ArticleServiceImpl implements ArticleService {
         comment.setArticle(articleToComment);
 
         return commentMapper.entityToDto(commentRepository.saveAndFlush(comment));
+    }
+
+    @Override
+    @Transactional
+    public ArticleResponseDto createArticle(Long userId, ArticleRequestDto articleRequestDto) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new BadRequestException("you're not real");
+        }
+
+        Article newArticle = articleMapper.dtoToEntity(articleRequestDto);
+        newArticle.setAuthor(user.get());
+
+        List<Category> articleCategories = new ArrayList<>(categoryRepository.findAllById(articleRequestDto.getCategoryIds()));
+
+        newArticle.setCategories(articleCategories);
+        return articleMapper.entityToDto(articleRepository.save(newArticle));
     }
 }

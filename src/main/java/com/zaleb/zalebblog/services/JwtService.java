@@ -1,6 +1,7 @@
 package com.zaleb.zalebblog.services;
 
 import com.zaleb.zalebblog.entities.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -24,10 +25,40 @@ public class JwtService {
                 .subject(user.getCredentials().getUsername())
                 .claim("userId", user.getId())
                 .claim("name", user.getName())
+                .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    public String extractRole(String token) {
+        return parseClaims(token).get("role", String.class);
+    }
+
+    public Long extractId(String token) {
+        return parseClaims(token).get("userId", Long.class);
+    }
+
+    public boolean isTokenValid(String token, String username) {
+        try {
+            Claims claims = parseClaims(token);
+            return claims.getSubject().equals(username) && claims.getExpiration().after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private SecretKey getSigningKey() {

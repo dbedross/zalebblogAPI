@@ -1,5 +1,6 @@
 package com.zaleb.zalebblog.services;
 
+import com.zaleb.zalebblog.dtos.ArticleRequestDto;
 import com.zaleb.zalebblog.dtos.ArticleResponseDto;
 import com.zaleb.zalebblog.dtos.CommentRequestDto;
 import com.zaleb.zalebblog.dtos.CommentResponseDto;
@@ -11,4 +12,6 @@ public interface ArticleService {
     Set<ArticleResponseDto> getAllArticles();
 
     CommentResponseDto comment(Long articleId, CommentRequestDto commentRequestDto);
+
+    ArticleResponseDto createArticle(Long userId, ArticleRequestDto articleRequestDto);
 }
