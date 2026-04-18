@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-public class UserRequestDto {
+public class RoleUpdateDto {
 
-    private CredentialsDto credentials;
-
-    private String name;
+    private String role;
 }

@@ -72,4 +72,13 @@ public class ArticleServiceImpl implements ArticleService {
         newArticle.setCategories(articleCategories);
         return articleMapper.entityToDto(articleRepository.save(newArticle));
     }
+
+    @Override
+    public ArticleResponseDto getArticle(Long articleId) {
+        Optional<Article> article = articleRepository.findById(articleId);
+        if(article.isEmpty()) {
+            throw new BadRequestException("that article isn't real");
+        }
+        return articleMapper.entityToDto(article.get());
+    }
 }

@@ -57,19 +57,19 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public LoginResponseDto register(UserRequestDto userRequestDto) {
         if (userRequestDto == null
-                || userRequestDto.getCredentialsDto() == null
-                || userRequestDto.getCredentialsDto().getUsername() == null
-                || userRequestDto.getCredentialsDto().getPassword() == null
+                || userRequestDto.getCredentials() == null
+                || userRequestDto.getCredentials().getUsername() == null
+                || userRequestDto.getCredentials().getPassword() == null
                 || userRequestDto.getName() == null) {
             throw new BadRequestException("Name, username, and password are all required.");
         }
 
-        String username = userRequestDto.getCredentialsDto().getUsername();
+        String username = userRequestDto.getCredentials().getUsername();
         if (userRepository.findByCredentialsUsername(username).isPresent()) {
             throw new BadRequestException("Username is already taken.");
         }
 
-        Credentials credentials = credentialsMapper.dtoToEntity(userRequestDto.getCredentialsDto());
+        Credentials credentials = credentialsMapper.dtoToEntity(userRequestDto.getCredentials());
         credentials.setPassword(passwordEncoder.encode(credentials.getPassword()));
 
         User newUser = new User();

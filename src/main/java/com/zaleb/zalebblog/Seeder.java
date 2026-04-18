@@ -48,7 +48,7 @@ public class Seeder implements CommandLineRunner {
         creds3.setUsername("dev");
         creds3.setPassword(passwordEncoder.encode("password"));
         dev.setCredentials(creds3);
-        dev.setRole("DEVELOPER");
+        dev.setRole("ADMIN");
 
         userRepository.saveAllAndFlush(Arrays.asList(new User[]{calebUser, zachUser, dev}));
 

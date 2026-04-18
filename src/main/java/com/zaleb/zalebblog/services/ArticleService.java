@@ -14,4 +14,6 @@ public interface ArticleService {
     CommentResponseDto comment(Long articleId, CommentRequestDto commentRequestDto);
 
     ArticleResponseDto createArticle(Long userId, ArticleRequestDto articleRequestDto);
+
+    ArticleResponseDto getArticle(Long articleId);
 }

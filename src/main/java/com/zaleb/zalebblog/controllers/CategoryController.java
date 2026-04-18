@@ -4,6 +4,7 @@ import com.zaleb.zalebblog.dtos.CategoryDto;
 import com.zaleb.zalebblog.dtos.CategoryRequestDto;
 import com.zaleb.zalebblog.services.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('AUTHOR')")
     public CategoryDto createCategory(@RequestBody CategoryRequestDto categoryRequestDto){
         return categoryService.createCategory(categoryRequestDto);
     }

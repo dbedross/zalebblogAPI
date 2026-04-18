@@ -1,7 +1,5 @@
 package com.zaleb.zalebblog.services;
 
-import com.zaleb.zalebblog.dtos.ArticleRequestDto;
-import com.zaleb.zalebblog.dtos.ArticleResponseDto;
 import com.zaleb.zalebblog.dtos.UserResponseDto;
 
 import java.util.Set;

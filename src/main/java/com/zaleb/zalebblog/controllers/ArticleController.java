@@ -41,4 +41,9 @@ public class ArticleController {
         return articleService.createArticle(userId, articleRequestDto);
     }
 
+    @GetMapping("/{articleId}")
+    public ArticleResponseDto getArticle(@PathVariable("articleId") Long articleId) {
+        return articleService.getArticle(articleId);
+    }
+
 }
