@@ -16,7 +16,7 @@ public class ArticleResponseDto {
 
     private String content;
 
-    private UserResponseDto author;
+    private SimplifiedUserDto author;
 
     private List<CommentResponseDto> comments;
 

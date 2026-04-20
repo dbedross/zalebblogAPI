@@ -33,7 +33,7 @@ public class ArticleController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('AUTHOR')")
+    @PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
     public ArticleResponseDto createArticle(@RequestHeader("Authorization") String authHeader,
                                             @RequestBody ArticleRequestDto articleRequestDto) {
         String token = authHeader.substring(7);
@@ -44,6 +44,21 @@ public class ArticleController {
     @GetMapping("/{articleId}")
     public ArticleResponseDto getArticle(@PathVariable("articleId") Long articleId) {
         return articleService.getArticle(articleId);
+    }
+
+    @GetMapping("/category/{categoryId}")
+    public Set<ArticleResponseDto> getArticlesByCategory(@PathVariable("categoryId") Long categoryId){
+        return articleService.getArticlesByCategory(categoryId);
+    }
+
+    @GetMapping("/user/{userId}")
+    public Set<ArticleResponseDto> getArticlesByUser(@PathVariable("userId") Long userId){
+        return articleService.getArticlesByUser(userId);
+    }
+
+    @GetMapping("/search")
+    public Set<ArticleResponseDto> searchArticles(@RequestParam("q") String query) {
+        return articleService.searchArticles(query);
     }
 
 }

@@ -59,8 +59,11 @@ public class AuthServiceImpl implements AuthService {
         if (userRequestDto == null
                 || userRequestDto.getCredentials() == null
                 || userRequestDto.getCredentials().getUsername() == null
+                || userRequestDto.getCredentials().getUsername().isBlank()
                 || userRequestDto.getCredentials().getPassword() == null
-                || userRequestDto.getName() == null) {
+                || userRequestDto.getCredentials().getPassword().isBlank()
+                || userRequestDto.getName() == null
+                || userRequestDto.getName().isBlank()) {
             throw new BadRequestException("Name, username, and password are all required.");
         }
 

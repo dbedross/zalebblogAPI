@@ -81,4 +81,34 @@ public class ArticleServiceImpl implements ArticleService {
         }
         return articleMapper.entityToDto(article.get());
     }
+
+    @Override
+    public Set<ArticleResponseDto> getArticlesByCategory(Long categoryId) {
+        Set<Article> articles = articleRepository.findAllByCategoriesId(categoryId);
+        if(articles.isEmpty()) {
+            throw new BadRequestException("no articles in this category");
+        }
+        return articleMapper.entitiesToDtos(articles);
+    }
+
+    @Override
+    public Set<ArticleResponseDto> getArticlesByUser(Long userId) {
+        Set<Article> articles = articleRepository.findAllByAuthorId(userId);
+        if(articles.isEmpty()){
+            throw new BadRequestException("no articles by this user");
+        }
+        return articleMapper.entitiesToDtos(articles);
+    }
+
+    @Override
+    public Set<ArticleResponseDto> searchArticles(String query) {
+        if (query == null || query.isBlank()) {
+            throw new BadRequestException("Search query cannot be empty.");
+        }
+        Set<Article> results = articleRepository.findAllByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(query, query);
+        if (results.isEmpty()) {
+            throw new BadRequestException("No articles found matching that search.");
+        }
+        return articleMapper.entitiesToDtos(results);
+    }
 }

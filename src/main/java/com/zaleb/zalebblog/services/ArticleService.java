@@ -16,4 +16,10 @@ public interface ArticleService {
     ArticleResponseDto createArticle(Long userId, ArticleRequestDto articleRequestDto);
 
     ArticleResponseDto getArticle(Long articleId);
+
+    Set<ArticleResponseDto> getArticlesByCategory(Long categoryId);
+
+    Set<ArticleResponseDto> getArticlesByUser(Long userId);
+
+    Set<ArticleResponseDto> searchArticles(String query);
 }
